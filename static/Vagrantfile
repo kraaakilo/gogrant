@@ -1,0 +1,29 @@
+Vagrant.configure("2") do |config|
+  config.vm.box = "{{ .BoxName }}"
+  config.vm.hostname = "{{ .Hostname }}"
+
+
+{{- if .EnablePrivate }}
+  config.vm.network "private_network", ip: "{{ .PrivateIP }}"
+{{- end }}
+
+{{- if .EnablePublic }}
+  config.vm.network "public_network", ip: "{{ .PublicIP }}", bridge: ["eth0", "wlan0"]
+{{- end }}
+
+  # config.vm.synced_folder "gogrant", "/home/vagrant/gogrant"
+
+  config.vm.provider "virtualbox" do |vb|
+    vb.memory = "{{ .Memory }}"
+    vb.cpus = {{ .CpuCount }}
+    vb.name = "{{ .Hostname }}"
+  end
+
+  config.vm.provision "shell" do |shell|
+    shell.inline = <<-SHELL
+      echo "Hello from gogrant!"
+    SHELL
+  end
+
+end
+
